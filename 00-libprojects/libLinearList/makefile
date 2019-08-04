@@ -84,6 +84,7 @@ OBJ_PATH := obj
 SRC_PATH := src
 DBG_PATH := debug
 INCLUDE_PATH := src/
+LIB_PATH := 
 
 #include marcros
 INCLUDE := LinearList.h

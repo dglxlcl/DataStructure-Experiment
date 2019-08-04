@@ -154,46 +154,92 @@ int Index_S(SString S,SString T,int pos){
 }
 
 int Replace_S(SString *S,SString T,SString V){//用V串替换主串S中所有与T串相等的不重叠的字串，返回替换的个数
-    if(!S || !T || !V) return ERROR;
+
+// //第一个算法思路：每次在S串中找到一个T串，立刻将S串后面的字符调整相应位置，空出空间用V串替换T串。此方法找到几个T串就要对S串整体调整几次，效率低
+//     if(!*S || !T || !V) return ERROR;
+//     if(T[0]==0) return 0;
+//     int count=0,pos=1,nextpos=1;//用count记录替换的个数，pos存储当前开始查找字串T的位置，nextpos存储下一个查找的位置，当nextpos=0（没有找到）时结束函数运行，返回count值。
+//     unsigned char i=0,j=0;//用i作为主串S的指针，用j作为v串的指针
+//     int length_temp;//此处必须定义一个整型变量存储长度，不然在计算length_temp>MAXSTRLEN时，会因为数据溢出而永远不执行这个判断内的代码
+//     unsigned char *pStr = (unsigned char*)(S);
+//     while( (nextpos=Index_S(*S,T,pos)) ){
+//         if(T[0]==V[0]){//被替换串T长度等于替换串V的情况。
+//             for(int i=nextpos,j=1;j<=V[0];i++,j++){
+//                pStr[i]=V[j];
+//             }
+//         }else if(T[0]<V[0]){//被替换串长度小于替换串长度的情况
+//             int dif = V[0]-T[0];//用dif变量存储V串比T串多多少。
+//             length_temp=pStr[0]+dif;//S串的长度+差额dif后，赋值给length_temp
+//             if( length_temp>MAXSTRLEN ) {//如果替换后，长度超过最大长度,输出错误信息，并终止函数。
+//                 printf("Replace_S：The string is overflew!\n");
+//                 return count;
+//             }
+//             for(i=pStr[0];i>=nextpos+T[0];i--){//将元素依次后移，挪出位置给V[0]
+//                 pStr[i+dif]=pStr[i];
+//             }
+//             for(i=nextpos,j=1;j<=V[0];i++,j++){//将原来T串替换为V串
+//                 pStr[i]=V[j];
+//             }
+//             pStr[0]+=dif;//S串长度增加
+//         }else {//T[0]>V[0]的情况，即被替换串长度大于替换串长度的情况
+//             int dif = T[0]-V[0];
+//             for(i=nextpos,j=1;j<=V[0];i++,j++){//将原来T串替换为V串
+//                 pStr[i]=V[j];
+//             }
+//             for(i=nextpos+V[0];i<=pStr[0]-dif;i++){//串元素依次前移
+//                 pStr[i]=pStr[i+dif];
+//             }
+//             pStr[0]-=dif;
+//         }
+//         count++;
+//         pos=nextpos+V[0];//继续查找下一个T串
+//     }
+//     return count;
+
+//第二个思路：在函数内新建一个SString。利用index（kmp算法）函数在S串中查找T串，找到一个，就将返回位置前面的所有字符读入new串，然后读入V串，接着查找下一个。
+    if(!*S || !T || !V) return ERROR;
     if(T[0]==0) return 0;
-    int count=0,pos=1,nextpos=1;//用count记录替换的个数，pos存储当前开始查找字串T的位置，nextpos存储下一个查找的位置，当nextpos=0（没有找到）时结束函数运行，返回count值。
-    unsigned char i=0,j=0;//用i作为主串S的指针，用j作为v串的指针
-    int length_temp;//此处必须定义一个整型变量存储长度，不然在计算length_temp>MAXSTRLEN时，会因为数据溢出而永远不执行这个判断内的代码
-    unsigned char *pStr = (unsigned char*)(S);
-    while( (nextpos=Index_S(*S,T,pos)) ){
-        if(T[0]==V[0]){//被替换串T长度等于替换串V的情况。
-            for(int i=nextpos,j=1;j<=V[0];i++,j++){
-               pStr[i]=V[j];
-            }
-        }else if(T[0]<V[0]){//被替换串长度小于替换串长度的情况
-            int dif = V[0]-T[0];//用dif变量存储V串比T串多多少。
-            length_temp=pStr[0]+dif;//S串的长度+差额dif后，赋值给length_temp
-            if( length_temp>MAXSTRLEN ) {//如果替换后，长度超过最大长度,输出错误信息，并终止函数。
-                printf("Replace_S：The string is overflew!\n");
-                return count;
-            }
-            for(i=pStr[0];i>=nextpos+T[0];i--){//将元素依次后移，挪出位置给V[0]
-                pStr[i+dif]=pStr[i];
-            }
-            for(i=nextpos,j=1;j<=V[0];i++,j++){//将原来T串替换为V串
-                pStr[i]=V[j];
-            }
-            pStr[0]+=dif;//S串长度增加
-        }else {//T[0]>V[0]的情况，即被替换串长度大于替换串长度的情况
-            int dif = T[0]-V[0];
-            for(i=nextpos,j=1;j<=V[0];i++,j++){//将原来T串替换为V串
-                pStr[i]=V[j];
-            }
-            for(i=nextpos+V[0];i<=pStr[0]-dif;i++){//串元素依次前移
-                pStr[i]=pStr[i+dif];
-            }
-            pStr[0]-=dif;
+    SString New;
+    New[0] = 0;//初始化new串长度为0
+    int count = 0;//存放替换的T串个数
+    int TmpPos=1;//临时存放在S串中找到的T串的位置
+    int p_New, p_S,p_V;//p_New用于向new串写数据，pc_S用于S主串的查找匹配，pw_S用于从S主串读数据（拷至new串），pT是T模式串的指针，pV是V串的指针（用于读V串数据拷贝至new串）
+    p_New = p_S = p_V = 1;
+    while( p_S<=(*S)[0]&& (TmpPos=Index_S(*S, T, p_S)) ){
+        while(p_S<TmpPos){
+            New[p_New] = (*S)[p_S];
+            p_New++;
+            p_S++;
+            New[0]++;
         }
-        count++;
-        pos=nextpos+V[0];//继续查找下一个T串
+        p_V = 1;
+        while(p_V<=V[0]&&((p_New+V[0])<=MAXSTRLEN+1)){
+            New[p_New] = V[p_V];
+            p_New++;
+            p_V++;
+            New[0]++;
+        }
+        if(p_V==V[0]+1)
+            count++;
+        p_S += T[0];
+    }
+    while(p_S<=(*S)[0]){
+        New[p_New] = (*S)[p_S];
+        p_New++;
+        p_S++;
+        New[0]++;
+    }
+    for (int i = 0; i <= New[0];i++){
+        (*S)[i] = New[i];
     }
     return count;
 }
+
+
+
+
+
+
 
 Static StrInsert_S(SString *S,int pos,SString V){//在第POS个位置之前插入串V
     if(!S || !V || pos<1 || pos > (*S)[0]+1 ) return ERROR;

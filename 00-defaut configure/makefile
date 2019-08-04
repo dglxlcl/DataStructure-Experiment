@@ -21,8 +21,8 @@ BIN_PATH := bin
 OBJ_PATH := obj
 SRC_PATH := src
 DBG_PATH := debug
-INCLUDE_PATH := E:\VSCode-C\00-Mylib\include
-LIB_PATH := E:\VSCode-C\00-Mylib\bin
+INCLUDE_PATH := ..\00-Mylib\include
+LIB_PATH := ..\00-Mylib\bin
 # compile marcros
 TARGET_NAME := main
 ifeq ($(OS),Windows_NT)
