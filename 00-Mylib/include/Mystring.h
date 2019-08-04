@@ -68,6 +68,10 @@ int Index_H(HString S, HString T, int pos);//在主串S中，查找第一个与T
 
 int Replace_H(HString *S, HString T, HString V); //用V串替换主串S中所有与T串相等的不重叠的字串，返回替换的个数
 
+Static StrInsert_H(HString *S, int pos, HString V); //在第POS个位置之前插入串V
+
+Static StrDelete_H(HString *S,int pos,int len);//在串S中删除第pos个字符起长度为len的字串
+
 Static PrintStr_H(HString S);
 
 

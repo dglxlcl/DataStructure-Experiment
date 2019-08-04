@@ -235,12 +235,6 @@ int Replace_S(SString *S,SString T,SString V){//用V串替换主串S中所有与
     return count;
 }
 
-
-
-
-
-
-
 Static StrInsert_S(SString *S,int pos,SString V){//在第POS个位置之前插入串V
     if(!S || !V || pos<1 || pos > (*S)[0]+1 ) return ERROR;
     unsigned char *pStr = (unsigned char*)(S);
@@ -481,6 +475,57 @@ int Replace_H(HString *S,HString T,HString V){//用V串替换主串S中所有与
     S->ch = NewStr;
     return count;
 }
+
+Static StrInsert_H(HString *S, int pos, HString V) { //在第POS个位置之前插入串V
+    if(!(S->ch)||!V.ch) return ERROR;
+    if(pos<1||pos>S->length+1) return ERROR;
+    char *NewCh = (char*)malloc((S->length+V.length)*sizeof(char));
+    int p_S,p_V,p_New;//i用作
+    p_S=p_V=p_New=0;
+    while(p_S<pos-1){
+        NewCh[p_New]=S->ch[p_S];
+        p_New++;
+        p_S++;
+    }
+    while(p_V<V.length){
+        NewCh[p_New]=V.ch[p_V];
+        p_New++;
+        p_V++;
+    }
+    while(p_S<S->length){
+        NewCh[p_New]=S->ch[p_S];
+        p_S++;
+        p_New++;
+    }
+    free(S->ch);
+    S->ch=NewCh;
+    S->length+=V.length;
+    return OK;
+}
+
+Static StrDelete_H(HString *S,int pos,int len){//在串S中删除第pos个字符起长度为len的字串
+    if(!(S->ch)) return ERROR;
+    if(pos<1||pos+len>S->length+1||len<0) return ERROR;
+    char * NewCh= (char*)malloc((S->length-len)*sizeof(char));
+    int p_New=0;//新串的指针
+    int p_S=0;//指向S串的指针
+    while(p_S<pos-1){
+        NewCh[p_New]=S->ch[p_S];
+        p_New++;
+        p_S++;
+    }
+    p_S+=len;
+    while(p_S<S->length){
+        NewCh[p_New]=S->ch[p_S];
+        p_New++;
+        p_S++;
+    }
+    free(S->ch);
+    S->ch=NewCh;
+    S->length-=len;
+    return OK;
+}
+
 
 Static PrintStr_H(HString S){
     if(!(S.ch)) return ERROR;
