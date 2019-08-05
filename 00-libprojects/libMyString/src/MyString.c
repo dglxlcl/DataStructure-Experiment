@@ -3,7 +3,7 @@
 #include "MyString.h"
 #include "StackAndQueue.h"
 
-Static StrAssign_S(SString *T,const char *chars){//将串常量chars赋值给串T
+Status StrAssign_S(SString *T,const char *chars){//将串常量chars赋值给串T
     if(!T) return ERROR;
     char *t=(char *)(T);
     int i=1;
@@ -15,7 +15,7 @@ Static StrAssign_S(SString *T,const char *chars){//将串常量chars赋值给串
     return OK;
 }
 
-Static StrCopy_S(SString *T,SString S){//将串S的值赋值给串T
+Status StrCopy_S(SString *T,SString S){//将串S的值赋值给串T
     if(!T||!S) return ERROR;
     char *t=(char*)(T);
     char *s=(char*)(S);
@@ -25,12 +25,12 @@ Static StrCopy_S(SString *T,SString S){//将串S的值赋值给串T
     return OK;
 }
 
-Static StrEmpty_S(SString S){//若S是空串，返回true；若S非空，则返回false
+Status StrEmpty_S(SString S){//若S是空串，返回true；若S非空，则返回false
     if(S[0]==0) return TRUE;
     else return FALSE;
 }
 
-Static StrCompare_S(SString S,SString T){//若S>T，则返回值>0；若S=T，则返回值=0；若S<T，则返回值<0；
+Status StrCompare_S(SString S,SString T){//若S>T，则返回值>0；若S=T，则返回值=0；若S<T，则返回值<0；
     int length=(S[0]>T[0])?S[0]:T[0];
     for(int i=1;i<=length;i++){
         if(S[i]==T[i]) continue;
@@ -44,12 +44,12 @@ int StrLength_S(SString S){//返回串S的长度
     return S[0];
 }
 
-Static ClearString_S(SString *S){//将串S变成空串
+Status ClearString_S(SString *S){//将串S变成空串
     (*S)[0]=0;
     return OK;
 }
 
-Static Concat_S(SString *T,SString S1,SString S2){//连接串S1和S2，赋值给串T
+Status Concat_S(SString *T,SString S1,SString S2){//连接串S1和S2，赋值给串T
     if(!S1||!S2) return ERROR;
     char *t=(char*)(T);//此处必须进行这个转换，不然t的偏移量会以MAXSTRLEN为步长
     if(S1[0]+S2[0]<=MAXSTRLEN){//S1长度+S2长度<MAXSTRLEN的情况
@@ -77,7 +77,7 @@ Static Concat_S(SString *T,SString S1,SString S2){//连接串S1和S2，赋值给
     return OK;
 }
 
-Static SubString_S(SString *Sub,SString S,int pos,int len){//查找串S中从第pos个位置开始，长度为len的字串，并赋值给Sub串
+Status SubString_S(SString *Sub,SString S,int pos,int len){//查找串S中从第pos个位置开始，长度为len的字串，并赋值给Sub串
     if( !S || pos<1 || pos>S[0] || len<0 || len>S[0]-pos+1 ) return ERROR;
     char *pSub = (char*)(Sub);
     int i,j;
@@ -235,7 +235,7 @@ int Replace_S(SString *S,SString T,SString V){//用V串替换主串S中所有与
     return count;
 }
 
-Static StrInsert_S(SString *S,int pos,SString V){//在第POS个位置之前插入串V
+Status StrInsert_S(SString *S,int pos,SString V){//在第POS个位置之前插入串V
     if(!S || !V || pos<1 || pos > (*S)[0]+1 ) return ERROR;
     unsigned char *pStr = (unsigned char*)(S);
     int length_temp = pStr[0]+V[0];//因为*pstr是char型变量，存不下比Maxlength更大的数，所以此处必须用length_temp临时存储一下长度
@@ -253,7 +253,7 @@ Static StrInsert_S(SString *S,int pos,SString V){//在第POS个位置之前插�
     return OK;
 }
 
-Static StrDelete_S(SString *S,int pos,int len){//在串S中删除第pos个字符起长度为len的字串
+Status StrDelete_S(SString *S,int pos,int len){//在串S中删除第pos个字符起长度为len的字串
     if(!S || pos <1 || pos>(*S)[0]-len+1 || len<0) {
         printf("StrDelete_S:Error,Argument Error!\n");
         return ERROR;
@@ -267,7 +267,7 @@ Static StrDelete_S(SString *S,int pos,int len){//在串S中删除第pos个字符
     return OK;
 }
 
-Static PrintStr_S(SString S){
+Status PrintStr_S(SString S){
     if(!S) return ERROR;
     fwrite(&S[1],1,S[0],stdout);//fwrite:将&S[1]起，以1个字节为单位，共S[0]个单位，拷贝到stdout标准输出文件。这里不用printf，主要是因为%s格式控制符需要找0/的字符串结束标志。
     return OK;
@@ -277,7 +277,7 @@ Static PrintStr_S(SString S){
 
 
 
-Static StrAssign_H(HString *T,const char *chars){
+Status StrAssign_H(HString *T,const char *chars){
     if( T->ch ) free(T->ch);//每次给堆分配串赋值前，都重新分配一下空间。
     int i=0;
     const char *c=chars;
@@ -302,7 +302,7 @@ Static StrAssign_H(HString *T,const char *chars){
     return OK;
 }
 
-Static StrCopy_H(HString *T,HString S){
+Status StrCopy_H(HString *T,HString S){
     if(T->ch) free(T->ch);
     int i=0;
     char *c = S.ch;
@@ -322,13 +322,13 @@ Static StrCopy_H(HString *T,HString S){
     return OK;
 }
 
-Static StrEmpty_H(HString S){
+Status StrEmpty_H(HString S){
     if(!(S.ch)) return INFEASIBLE;
     if(S.length==0) return TRUE;
     else return FALSE;
 }
 
-Static StrCompare_H(HString S,HString T){
+Status StrCompare_H(HString S,HString T){
 //    if ( !(S.ch) ||!(T.ch) ) return OVERFLOW;
 //    int i=0,j=0;
 //    while(i<S.length&&j<T.length){
@@ -353,7 +353,7 @@ int StrLength_H(HString S){
     return S.length;
 }
 
-Static ClearString_H(HString *S){
+Status ClearString_H(HString *S){
     if(S->ch){
         free(S->ch);
         S->ch=NULL;
@@ -362,7 +362,7 @@ Static ClearString_H(HString *S){
     return OK;
 }
 
-Static Concat_H(HString *T,HString S1,HString S2){
+Status Concat_H(HString *T,HString S1,HString S2){
     if(T->ch) free(T->ch);
     T->ch=(char *)malloc( (S1.length+S2.length)*sizeof(char) );
     if( !(T->ch) ) exit(OVERFLOW);
@@ -379,7 +379,7 @@ Static Concat_H(HString *T,HString S1,HString S2){
     return OK;
 }
 
-Static SubString_H(HString *Sub,HString S,int pos,int len){//查找串S中从第pos个位置开始，长度为len的字串，并赋值给Sub串
+Status SubString_H(HString *Sub,HString S,int pos,int len){//查找串S中从第pos个位置开始，长度为len的字串，并赋值给Sub串
     if(pos<1 || pos>S.length || len<0 || len>S.length-pos+1 ){
         printf("SubString_H:The Argument is illegal.\n");
         return ERROR;
@@ -476,7 +476,7 @@ int Replace_H(HString *S,HString T,HString V){//用V串替换主串S中所有与
     return count;
 }
 
-Static StrInsert_H(HString *S, int pos, HString V) { //在第POS个位置之前插入串V
+Status StrInsert_H(HString *S, int pos, HString V) { //在第POS个位置之前插入串V
     if(!(S->ch)||!V.ch) return ERROR;
     if(pos<1||pos>S->length+1) return ERROR;
     char *NewCh = (char*)malloc((S->length+V.length)*sizeof(char));
@@ -503,7 +503,7 @@ Static StrInsert_H(HString *S, int pos, HString V) { //在第POS个位置之前�
     return OK;
 }
 
-Static StrDelete_H(HString *S,int pos,int len){//在串S中删除第pos个字符起长度为len的字串
+Status StrDelete_H(HString *S,int pos,int len){//在串S中删除第pos个字符起长度为len的字串
     if(!(S->ch)) return ERROR;
     if(pos<1||pos+len>S->length+1||len<0) return ERROR;
     char * NewCh= (char*)malloc((S->length-len)*sizeof(char));
@@ -527,7 +527,7 @@ Static StrDelete_H(HString *S,int pos,int len){//在串S中删除第pos个字符
 }
 
 
-Static PrintStr_H(HString S){
+Status PrintStr_H(HString S){
     if(!(S.ch)) return ERROR;
     fwrite(S.ch,1,S.length,stdout);
     return OK;
