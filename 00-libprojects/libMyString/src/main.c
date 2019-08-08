@@ -7,7 +7,7 @@ int main(){
     HString T;
     HString V;
     HString SUB;
-    S.ch = T.ch = V.ch=SUB.ch= NULL;
+    S.ch = T.ch = V.ch= SUB.ch = NULL;
     S.length = T.length = 0;
     StrAssign_H(&S, "abcdefghijklmnopqrstuvwxyz");
     StrAssign_H(&T, "a");

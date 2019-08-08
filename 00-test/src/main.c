@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
+#include <string.h>
 
 
 // void foo(int dim,...){
@@ -17,11 +18,64 @@
 //     return 0;
 // }  
 
+// int main(){
+//     int a = 3;
+//     int array[a];
+//     for (int i = 0; i < a;i++){
+//         array[i] = i;
+//     }
+//     for (int i = 0; i < a;i++){
+//         printf("%d", array[i]);
+//     }
+//     return 0;
+// }
+
+void getnext(char *S, int *next);
+
+void adv_getnext(char *S, int *next);
+
 int main(){
-    int *p = (int *)malloc( 4*sizeof(int));
-    p[0]=1;
-    p[1]=2;
-    p[2]=4;
-    p[3]=8;
+    char *ch = {"abaabaaabaaaab"};
+    int len = strlen(ch);
+    int next[len];
+    adv_getnext(ch, next);
+    for (int i = 0; i < len;i++){
+        next[i]++;
+    }
     return 0;
+}
+
+
+void getnext (char *S,int *next){
+    int length = strlen(S);
+    next[0] = -1;
+    int i = 0;
+    int j = -1;
+    while(i<length){
+        if(j==-1||S[i]==S[j]){
+            i++;
+            j++;
+            next[i] = j;
+        }else{
+            j = next[j];
+        }
+    }
+}
+
+void adv_getnext(char *S,int *next){
+    int length = strlen(S);
+    next[0] = -1;
+    int i = 0;
+    int j = -1;
+    while(i<length){
+        if(j==-1||S[i]==S[j]){
+            i++;
+            j++;
+            if(S[i]==S[j]){
+                next[i] = next[j];
+            }else next[i] = j;
+        }else{
+            j = next[j];
+        }
+    }    
 }

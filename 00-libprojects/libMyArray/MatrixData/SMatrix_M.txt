@@ -1,0 +1,4 @@
+SMatrix.mu=3,SMatrix.nu=2
+RPOS:1        1        1        
+RPOS:3        0        1        
+RPOS:4        1        0        

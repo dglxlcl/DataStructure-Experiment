@@ -1,0 +1,6 @@
+SMatrix.mu=5,SMatrix.nu=5
+RPOS:1        12       0        0        0        0        
+RPOS:2        0        34       0        0        0        
+RPOS:3        0        0        56       0        1        
+RPOS:5        0        33       22       0        0        
+RPOS:7        0        56       1        0        1        
