@@ -9,7 +9,7 @@
 #define OVERFLOW -2
 #define MAXSTRLEN 255
 
-typedef int Static;
+typedef int Status;
 
 typedef unsigned char SString[MAXSTRLEN+1];//必须使用unsigned char型变量，不然0号元素取值范围为-128~127，取不到255
 
@@ -19,60 +19,60 @@ typedef struct {
 }HString;
 
 
-Static StrAssign_S(SString *T,const char *chars);
+Status StrAssign_S(SString *T,const char *chars);
 
-Static StrCopy_S(SString *T,SString S);
+Status StrCopy_S(SString *T,SString S);
 
-Static StrEmpty_S(SString S);
+Status StrEmpty_S(SString S);
 
-Static StrCompare_S(SString S,SString T);
+Status StrCompare_S(SString S,SString T);
 
 int StrLength_S(SString S);
 
-Static ClearString_S(SString *S);
+Status ClearString_S(SString *S);
 
-Static Concat_S(SString *T,SString S1,SString S2);
+Status Concat_S(SString *T,SString S1,SString S2);
 
-Static SubString(SString *Sub,SString S,int pos,int len);
+Status SubString(SString *Sub,SString S,int pos,int len);
 
 int Index_S(SString S,SString T,int pos);
 
 int Replace_S(SString *S,SString T,SString V);
 
-Static StrInsert_S(SString *S,int pos,SString V);
+Status StrInsert_S(SString *S,int pos,SString V);
 
-Static StrDelete_S(SString *S,int pos,int len);
+Status StrDelete_S(SString *S,int pos,int len);
 
-Static PrintStr_S(SString S);
-
-
+Status PrintStr_S(SString S);
 
 
-Static StrAssign_H(HString *T,const char *chars);
 
-Static StrCopy_H(HString *T,HString S);
 
-Static StrEmpty_H(HString S);
+Status StrAssign_H(HString *T,const char *chars);
 
-Static StrCompare_H(HString S,HString T);
+Status StrCopy_H(HString *T,HString S);
+
+Status StrEmpty_H(HString S);
+
+Status StrCompare_H(HString S,HString T);
 
 int StrLength_H(HString S);
 
-Static ClearString_H(HString *S);
+Status ClearString_H(HString *S);
 
-Static Concat_H(HString *T,HString S1,HString S2);
+Status Concat_H(HString *T,HString S1,HString S2);
 
-Static SubString_H(HString *Sub, HString S, int pos, int len); //查找串S中从第pos个位置开始，长度为len的字串，并赋值给Sub串
+Status SubString_H(HString *Sub, HString S, int pos, int len); //查找串S中从第pos个位置开始，长度为len的字串，并赋值给Sub串
 
 int Index_H(HString S, HString T, int pos);//在主串S中，查找第一个与T串相等的子串，并返回其第一个字符的位置
 
 int Replace_H(HString *S, HString T, HString V); //用V串替换主串S中所有与T串相等的不重叠的字串，返回替换的个数
 
-Static StrInsert_H(HString *S, int pos, HString V); //在第POS个位置之前插入串V
+Status StrInsert_H(HString *S, int pos, HString V); //在第POS个位置之前插入串V
 
-Static StrDelete_H(HString *S,int pos,int len);//在串S中删除第pos个字符起长度为len的字串
+Status StrDelete_H(HString *S,int pos,int len);//在串S中删除第pos个字符起长度为len的字串
 
-Static PrintStr_H(HString S);
+Status PrintStr_H(HString S);
 
 
 #endif // MY_STRING_H_INCLUDED

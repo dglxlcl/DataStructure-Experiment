@@ -83,15 +83,15 @@ BIN_PATH := bin
 OBJ_PATH := obj
 SRC_PATH := src
 DBG_PATH := debug
-INCLUDE_PATH := 
+INCLUDE_PATH := ./
 LIB_PATH := 
 
 #include marcros
-INCLUDE := 
+INCLUDE := MyTree.h
 LIB:= 
 
 # compile marcros
-TARGET_NAME := libMyArray.a
+TARGET_NAME := libMyTree.a
 DEBUG_NAME  := main.exe
 TARGET := $(BIN_PATH)/$(TARGET_NAME)
 TARGET_DEBUG := $(DBG_PATH)/$(DEBUG_NAME)

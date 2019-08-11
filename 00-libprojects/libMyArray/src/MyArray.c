@@ -232,7 +232,7 @@ Status LoadSMatrix(SMatrix *M,char *filename){//从文件名为filename的文件
                     return ERROR;
                 }
                 fscanf(fp, "%*[ ]");//清除每个元素后面的空格
-                fscanf(fp, "%1[\n]",&BRflag);//每读完一个元素，就尝试读一次回车,这里处理列不匹配的情况
+                fscanf(fp, "%1[\n]",(char *)&BRflag);//每读完一个元素，就尝试读一次回车,这里处理列不匹配的情况
                 if(j!=M->nu&&BRflag==10){//列宽小于M->mu的情况
                     printf("LoadSMatrix:The Matrix in the file '%s' is not compatible!\n",filename);
                     return ERROR;

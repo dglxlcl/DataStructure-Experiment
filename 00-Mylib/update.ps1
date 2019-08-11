@@ -8,3 +8,6 @@ Copy-Item ..\00-libprojects\libStackAndQueue\src\StackAndQueue.h .\include\Stack
 
 Copy-Item ..\00-libprojects\libMyString\src\MyString.h .\include\Mystring.h
 Copy-Item ..\00-libprojects\libMyString\bin\libMyString.a .\bin\libMyString.a
+
+Copy-Item ..\00-libprojects\libMyArray\bin\libMyArray.a .\bin\libMyArray.a
+Copy-Item ..\00-libprojects\libMyArray\src\MyArray.h .\include\MyArray.h
