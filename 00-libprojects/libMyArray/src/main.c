@@ -3,26 +3,12 @@
 #include "MyArray.h"
 
 int main(){
-    SMatrix M,N,Q;
-    M.data = NULL;
-    N.data = NULL;
-    Q.data = NULL;
-    // CreateSMatrix(&M);
-    LoadSMatrix(&M, "..\\MatrixData\\SMatrix_M.txt");
-    PrintSMatrix(M);
-    // SaveSMatrix(M, "..\\MatrixData\\SMatrix_M.txt");
-    putchar('\n');
-
-    // CreateSMatrix(&N);
-    LoadSMatrix(&N, "..\\MatrixData\\SMatrix_N.txt");
-    PrintSMatrix(N);
-    // SaveSMatrix(N, "..\\MatrixData\\SMatrix_N.txt");
-    putchar('\n');
-
-    MultSMatrix(M, N, &Q);
-    SaveSMatrix(Q, "..\\MatrixData\\SMatrix_Q.txt");
-    PrintSMatrix(Q);
-
+    // CrossList M;
+    // M.rhead = M.chead = NULL;
+    // M.mu = M.nu = M.tu = 0;
+    // CreatSMatrix_OL(&M);
+    // PrintSMatrix_OL(M);
+    printf("%d", INT_MAX);
     return 0;
 }
 

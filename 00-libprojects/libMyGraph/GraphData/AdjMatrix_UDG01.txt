@@ -1,0 +1,10 @@
+Graphkind:2
+IncInfo=0
+vexnum:5,edgenum:6
+vertex:12345
+(1,2) Info:NULL
+(1,4) Info:NULL
+(2,3) Info:NULL
+(2,5) Info:NULL
+(3,4) Info:NULL
+(3,5) Info:NULL

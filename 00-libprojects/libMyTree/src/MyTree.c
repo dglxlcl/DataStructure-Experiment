@@ -192,6 +192,21 @@ Status LevelOrderTranverseBitree_Sq(SqBiTree T,int SerialNum,Status (*visit)(TEl
     return OK;
 }
 
+
+//创建一个二叉树链表结点，返回其指针
+
+BiTree GetBiTreeNode(TElemType root,BiTree lchild,BiTree rchild){
+    if(root == ' '){
+        return NULL;
+    }else{
+        BiTree p = (BiTree)malloc(sizeof(BiTNode));
+        p->data = root;
+        p->lchild = lchild;
+        p->rchild = rchild;
+        return p;
+    }
+}
+
 //先序创建一个二叉链表，递归算法实现
 Status PreCreatBiTree(BiTree *T){
     TElemType ch;
@@ -279,27 +294,260 @@ Status PostOrderTranverseBiTree(BiTree T,Status (*visit)(TElemType e)){
     LinkStack S;
     InitStack_L(&S);
     BiTree p = T;
-    BiTree top;
     BiTree last = NULL;
     while(p||!StackEmpty_L(&S)){
         if(p&&p!=last){
             Push_L(&S, p);
             p = p->lchild;
         }else{
-            GetTop_L(&S, &top);
-            if(top->rchild==NULL||top->rchild==last){
+            GetTop_L(&S, &p);//遍历完左子树后，先看一眼栈顶，如果栈顶元素的右子树为空或已访问，那么就弹栈并visit栈顶（就是根节点在最后访问），get是后序遍历的关键，因为根结点还没有访问，不能弹栈
+            if(p->rchild==NULL||p->rchild==last){
                 Pop_L(&S, &p);
                 if(!visit(p->data)){
                     return ERROR;
                 }
-                last = p;
+                last = p;//每访问了一个结点，就将last指针指向它
             }else{
-                p = p->rchild;
+                p = p->rchild;//遍历完左子树，先看一眼栈顶，如果栈顶的右子树还没有访问，那么先不慌弹栈，而是将p指针指向它的右子树。
             }
         }
-        if(last==T){
+        if(last==T){//如果是后序遍历，那么树的根结点是最后访问了，如果last等于根结点，那么访问完毕
             break;
         }
     }
     return OK;
+}
+
+//层序遍历一个二叉链表
+Status LevelOrderTranverseBiTree(BiTree T,Status (*visit)(TElemType e)){
+    LinkQueue Q;
+    InitQueue_L(&Q);
+    BiTree p = T;
+    if(p){
+        EnQueue_L(&Q, p);
+        while(!QueueEmpty_L(Q)){
+            DeQueue_L(&Q, &p);
+            if( !visit(p->data) ){
+                return ERROR;
+            }
+            if(p->lchild) EnQueue_L(&Q, p->lchild);
+            if(p->rchild) EnQueue_L(&Q, p->rchild);
+        }
+    }else {
+        return ERROR;
+    }
+    return OK;
+}
+
+
+//创建一个二叉线索链表，返回其指针
+BiThrTree GetBiThrTreeNode(TElemType root,BiThrTree lchild,BiThrTree rchild,PointerTag LTag,PointerTag RTag){
+    if(root == ' '){
+        return NULL;
+    }else{
+        BiThrTree p = (BiThrTree)malloc(sizeof(BiThrNode));
+        p->data = root;
+        p->lchild = lchild;
+        p->rchild = rchild;
+        p->LTag = LTag;
+        p->RTag = RTag;
+        return p;
+    }
+}
+
+//先序创建一个二叉线索链表，递归算法实现
+Status PreCreatBiThrTree(BiThrTree *T){
+    TElemType ch;
+    TElemType tmp[2];
+    scanf("%c", &ch);
+    scanf("%1[\n]", tmp);
+    if(ch==' '){
+        *T = NULL;
+    }else{
+        *T = (BiThrTree)malloc(sizeof(BiThrNode));
+        if(!(*T)) exit(OVERFLOW);
+        (*T)->data = ch;
+        PreCreatBiThrTree( &((*T)->lchild) );
+        PreCreatBiThrTree( &((*T)->rchild) );
+    }
+    return OK;
+}
+
+
+//中序线索化一个二叉连锁链表时使用的一个递归程序
+Status InThreading(BiThrTree T,BiThrTree *Pre){
+    if( T == NULL){
+        return ERROR;
+    }else{
+        InThreading(T->lchild, Pre);
+        if(!T->lchild){
+            T->LTag = Thread;
+            T->lchild = *Pre;
+        }else{
+            T->LTag = Link;
+        }
+        if(!(*Pre)->rchild){
+            (*Pre)->RTag = Thread;
+            (*Pre)->rchild = T;
+        }else{
+            (*Pre)->RTag = Link;
+        }
+        *Pre = T;
+        InThreading(T->rchild, Pre);
+        return OK;
+    }
+}
+
+
+//中序线索化一颗二叉线索链表，线索完毕后，会新建一个线索头结点，其左链指向原树的根节点。
+Status InOrderThreadingBiThrTree(BiThrTree *T){
+    BiThrTree Thr = (BiThrNode *)malloc(sizeof(BiThrNode));
+    if(!Thr){
+        printf("InOrdThreadingBiThrTree:Failed to distribute memmory!\n");
+        return ERROR;
+    }
+    Thr->data = ' ';
+    Thr->RTag = Thread;
+    Thr->rchild = Thr;
+    Thr->LTag = Link;
+    if(!*T){
+        free(Thr);
+        return OK;
+    }else{
+        Thr->lchild = *T;
+        BiThrTree Pre;
+        Pre = Thr;
+        InThreading(*T, &Pre);
+        Pre->RTag = Thread;
+        Pre->rchild = Thr;
+        Thr->rchild = Pre;
+        *T = Thr;
+        return OK;
+    }
+} 
+
+//中序线索遍历一颗二叉线索链表
+Status InOrderTranverseBiThrTree(BiThrTree T,Status (*visit)(TElemType e)){
+    BiThrTree p;
+    p = T->lchild;
+    while(p!=T){
+        while(p->LTag==Link){//找到二叉中序线索树的第一个结点
+            p = p->lchild;
+        }
+        if(!visit(p->data)){
+            return ERROR;
+        }
+        while(p->RTag==Thread&&p->rchild!=T){
+            p = p->rchild;
+            if(!visit(p->data)){
+                return ERROR;
+            }
+        }
+        p = p->rchild;
+    }
+    return OK;
+}
+
+//创建一个孩子兄弟表示法的树结点，返回其指针
+Tree GetTreeNode(TElemType root,Tree firstchild,Tree nextsibling){
+    if(root == ' '){
+        return NULL;
+    }else{
+        Tree p = (Tree)malloc(sizeof(TreeNode));
+        p->data = root;
+        p->firstchild = firstchild;
+        p->nextsibling = nextsibling;
+        return p;
+    }
+}
+
+//先根创建一颗树（孩子兄弟表示法）
+Status PreCreatTree(Tree *T){
+    TElemType ch;
+    TElemType tmp[2];
+    scanf("%c",&ch);
+    scanf("%1[\n]", tmp);
+    if(ch==' '){
+        *T = NULL;
+    }else{
+        *T = (Tree)malloc(sizeof(TreeNode));
+        (*T)->data = ch;
+        (*T)->nextsibling = NULL;
+        PreCreatTree( &((*T)->firstchild) );
+        Tree p = (*T)->firstchild;
+        while(p){
+            PreCreatTree(&p->nextsibling);
+            p = p->nextsibling;
+        }
+    }
+    return OK;
+}
+
+//先根遍历一颗树（孩子兄弟表示法）
+Status PreTranverseTree(Tree T,Status (*visit)(TElemType e) ){
+    Tree p = T;
+    if(!T){
+        return OK;
+    }else{
+        if(!visit(T->data)){
+            return ERROR;
+        }
+        if(T->firstchild!=NULL){
+            PreTranverseTree(T->firstchild, visit);
+            p = T->firstchild;
+            while(p->nextsibling){
+                PreTranverseTree(p->nextsibling, visit);
+                p = p->nextsibling;
+            }
+            
+        }
+        return OK;
+    }
+}
+
+//创建一个二叉链表存储结构的森林结点，返回其指针
+Forst GetForstNode(TElemType root,Forst firstsubforst,Forst nextforst){
+    if(root == ' '){
+        return NULL;
+    }else{
+        Forst p = (Forst)malloc(sizeof(ForstNode));
+        p->data = root;
+        p->firstsubforst = firstsubforst;
+        p->nextforst = nextforst;
+        return p;
+    }
+}
+
+
+//先序创建一个森林
+Status PreCreatForst(Forst *F){
+    TElemType ch;
+    TElemType tmp[2];
+    scanf("%c",&ch);
+    scanf("%1[\n]", tmp);
+    if(ch==' '){
+        *F = NULL;
+    }else{
+        *F = (Forst)malloc(sizeof(ForstNode));
+        (*F)->data = ch;
+        PreCreatForst(&(*F)->firstsubforst);
+        PreCreatForst(&(*F)->nextforst);
+    }
+    return OK;
+}
+
+
+//先序遍历森林
+Status PreTranverseForst(Forst F,Status (*visit)(TElemType e)){
+    if(!F){
+        return OK;
+    }else{
+        if(!visit(F->data)){
+            return ERROR;
+        }
+        PreTranverseForst(F->firstsubforst, visit);
+        PreTranverseForst(F->nextforst, visit);
+
+        return OK;
+    }
 }

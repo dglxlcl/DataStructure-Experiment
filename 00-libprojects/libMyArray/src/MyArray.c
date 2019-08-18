@@ -102,15 +102,15 @@ Status CreateSMatrix(SMatrix *M){
     M->rpos = (int *)malloc((M->mu + 1) * sizeof(int));//下标0未用
     M->rpos[0] = 0;
     M->rpos[1] = 1;
-    int rnum[M->mu + 1];//存储每一行非零元的个数
+    int rnum[M->mu + 1];//rnum存储每一行非零元的个数
     for (int i = 0; i <= M->mu;i++){//初始化rnum数组
         rnum[i] = 0;
     }
     printf("input the total number of col:");
     scanf("%d", &M->nu);
-    printf("Please input the Triple of TSMartrix row by row [example:row,col,number,...],And input '#' for end.\n");
+    printf("Please input the Triple of TSMartrix row by row [example:row,col,number 'next elem'...],And input '#' for end.\n");
     while (count<MAX_MATRIX_SIZE){
-        if( scanf("%d %d %d", &tmp_i,&tmp_j,&tmp_e) ){//data[0]不用
+        if( scanf("%d,%d,%d", &tmp_i,&tmp_j,&tmp_e) ){//data[0]不用
             if(tmp_i<1||tmp_i>M->mu||tmp_j<1||tmp_j>M->nu){
                 printf("GreateSMatrix:input error!\n");
                 return ERROR;
@@ -591,6 +591,109 @@ Status TransposeSMatrix(SMatrix M,SMatrix *T){//对SMartrix M进行转置处理�
         T->tu++; //其实这一句可以简化，在前面直接写成T->tu=M.tu;
         cpos[M.data[p_M].j]++;
         p_M++;
+    }
+    return OK;
+}
+
+
+//在屏幕上利用键盘输入，创建十字链表稀疏矩阵
+Status CreatSMatrix_OL(CrossList *M){
+//如果M已经存在，释放M的空间
+    if(M->chead!=NULL||M->rhead!=NULL){
+        OLink p,q;
+        for (int i = 1; i <= M->mu;i++){//逐行释放结点
+            p = M->rhead[i];
+            q = p->right;
+            while(q!=NULL){
+                p = q;
+                q = q->right;
+                free(p);
+            }
+        }
+        free(M->rhead);
+        free(M->chead);
+        M->mu = 0;
+        M->nu = 0;
+        M->tu = 0;
+    }
+
+//输入M的行数，列数
+    printf("input the total number of row:");
+    scanf("%d", &M->mu);
+    printf("input the total number of col:");
+    scanf("%d", &M->nu);
+    M->tu = 0;
+    int maxsize = M->mu * M->nu;
+
+    //创建行、列头指针向量，并初始化为NULL
+    M->rhead = (OLink *)malloc((M->mu + 1) * sizeof(OLink));
+    M->chead = (OLink *)malloc((M->nu + 1) * sizeof(OLink));
+    for (int i = 0; i <= M->mu;i++){
+        M->rhead[i] = NULL;
+    }
+    for (int i = 0; i <= M->nu;i++){
+        M->chead[i] = NULL;
+    }
+//按任意次序输入非零元，并根据i，j的值插入到合适的位置，当非零元个数大于等于mu*nu时或者检测到‘#’时结束输入
+    char flag[2];
+    int tmp_i, tmp_j;
+    ElemType tmp_e;
+    OLink p,q;
+    while(M->tu<=maxsize&&flag[0]!='#'){//当非零元个数大于等于mu*nu时结束输入
+        scanf("%d,%d,%d", &tmp_i, &tmp_j, &tmp_e);//接收屏幕输入
+        if(tmp_i<1||tmp_i>M->mu||tmp_j<1||tmp_j>M->nu){//输入边界检查
+            printf("CreatSMatrix_OL:input error!\n");
+            return ERROR;
+        }else{
+            p = (OLink)malloc(sizeof(OLNode));//创建新结点，将输入的i，j，e值赋值给新节点
+            p->i = tmp_i;
+            p->j = tmp_j;
+            p->e = tmp_e;
+            if(M->rhead[tmp_i]==NULL||M->rhead[tmp_i]->j>tmp_j){//当插入位置位于行链表首个时，直接插入
+                p->right = M->rhead[tmp_i];
+                M->rhead[tmp_i] = p;
+            }else{
+                for (q = M->rhead[tmp_i]; (q->right) && q->right->j < tmp_j;q=q->right);//否则就找到行插入位置
+                p->right = q->right;
+                q->right = p;
+            }
+            if(M->chead[tmp_j]==NULL||M->chead[tmp_j]->i>tmp_i){//当插入位置位于列链表首个时，直接插入
+                p->down = M->chead[tmp_j];
+                M->chead[tmp_j] = p;
+            }else{
+                for (q = M->chead[tmp_j]; (q->down) && q->down->i < tmp_i;q=q->down);//否则就找到列插入位置
+                p->down = q->down;
+                q->down = p;
+            }
+            M->tu++;
+        }
+        scanf("%*[ ]");
+        scanf("%1[#]", flag);
+    }
+    return OK;
+}
+
+//在屏幕上输出十字链表稀疏矩阵M
+Status PrintSMatrix_OL(CrossList M){
+    if(M.chead==NULL||M.rhead==NULL){
+        printf("PrintSMatrix_OL:The CrossList is not initialized.\n");
+        return ERROR;
+    }
+    int mu = M.mu;
+    int nu = M.nu;
+    printf("SMatrix.mu=%d,SMatrix.nu=%d\n", mu, nu);
+    OLink p;
+    for (int i = 1; i <= mu;i++){
+        p = M.rhead[i];
+        for (int j = 1; j <= nu;j++){
+            if(p&&i==p->i&&j==p->j){
+                printf("%-9d",p->e);
+                p = p->right;
+            }else{
+                printf("%-9d",0);
+            }
+        }
+        putchar('\n');
     }
     return OK;
 }

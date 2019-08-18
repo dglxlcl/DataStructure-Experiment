@@ -20,6 +20,30 @@ typedef struct BiTNode{//二叉链表的定义
     struct BiTNode *lchild, *rchild;//左子树和右子树的根节点指针
 } BiTNode, *BiTree;
 
+typedef enum
+{
+    Link,
+    Thread
+} PointerTag;
+
+typedef struct BiThrNode{
+    TElemType data;
+    struct BiThrNode *lchild, *rchild;
+    PointerTag LTag, RTag;
+} BiThrNode, *BiThrTree;
+
+typedef struct TreeNode{
+    TElemType data;
+    struct TreeNode *firstchild,*nextsibling;
+} TreeNode, *Tree;
+
+typedef struct ForstNode{
+    TElemType data;
+    struct ForstNode *firstsubforst, *nextforst;
+}ForstNode, *Forst;
+
+
+
 //初始化一个顺序存储结构的二叉树，全部赋值为0
 Status InitBiTree_Sq(SqBiTree *T);
 
@@ -56,5 +80,28 @@ Status InOrderTranverseBiTree(BiTree T, Status (*visit)(TElemType e));
 //后序遍历一个二叉链表
 Status PostOrderTranverseBiTree(BiTree T, Status (*visit)(TElemType e));
 
+//层序遍历一个二叉链表
+Status LevelOrderTranverseBiTree(BiTree T, Status (*visit)(TElemType e));
+
+//先序创建一个二叉线索链表，递归算法实现
+Status PreCreatBiThrTree(BiThrTree *T);
+
+//中序线索化一颗二叉线索链表
+Status InOrderThreadingBiThrTree(BiThrTree *T);
+
+//中序线索遍历一颗二叉线索链表
+Status InOrderTranverseBiThrTree(BiThrTree T,Status (*visit)(TElemType e));
+
+//先根创建一颗树
+Status PreCreatTree(Tree *T);
+
+//先根遍历一颗树（孩子兄弟表示法）
+Status PreTranverseTree(Tree T, Status (*visit)(TElemType e));
+
+//先序创建一个森林
+Status PreCreatForst(Forst *F);
+
+//先序遍历森林
+Status PreTranverseForst(Forst F, Status (*visit)(TElemType e));
 
 #endif //MY_TREE_H_INCLUDED

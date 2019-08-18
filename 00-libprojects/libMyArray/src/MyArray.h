@@ -35,6 +35,17 @@ typedef struct{
     int mu,nu,tu;//矩阵的行数、列数、非零元个数。
 }SMatrix;
 
+typedef struct OLNode{
+    int i, j;
+    ElemType e;
+    struct OLNode *right, *down;
+} OLNode,*OLink;
+
+typedef struct {
+    OLink *rhead, *chead;
+    int mu, nu, tu;
+} CrossList;
+
 Status InitArray(Array *A,int dim,...);//初始化一个数组A，其维度是dim，可变变量为各个维度的长度。
 
 Status DestroyArray(Array *A);//销毁一个数组。
@@ -62,5 +73,12 @@ Status SubtSMtrix(SMatrix M, SMatrix N, SMatrix *Q);//SparseMatrix M和N的行�
 Status MultSMatrix(SMatrix M, SMatrix N, SMatrix *Q);//对符合规格要求的两个矩阵M，N，进行相乘，结果存入矩阵Q;
 
 Status TransposeSMatrix(SMatrix M, SMatrix *T); //对SMartrix M进行转置处理，得到SMatrix T
+
+
+//在屏幕上利用键盘输入，创建十字链表稀疏矩阵
+Status CreatSMatrix_OL(CrossList *M);
+
+//在屏幕上输出十字链表稀疏矩阵M
+Status PrintSMatrix_OL(CrossList M);
 
 #endif // MY_ARRAY_H_INCLUDED
