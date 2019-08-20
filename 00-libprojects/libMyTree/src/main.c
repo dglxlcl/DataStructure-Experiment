@@ -5,8 +5,12 @@
 
 int main(){
     Forst F=NULL;
-    PreCreatForst(&F);
-    PreTranverseForst(F, PrintElem);
+    PreOrderCreatForst(&F);
+    PreOrderTranverseForst(F, PrintElem);
+    // InOrderTranverseForst(F, PrintElem);
+    // Tree T;
+    // PreRootCreatTree(&T);
+    // PostRootTranverseTree(T,PrintElem);
     return 0;
 } 
 

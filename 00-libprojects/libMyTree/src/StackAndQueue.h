@@ -16,9 +16,9 @@
 
 typedef int Status;
 
-typedef BiTree SElemType;
+typedef Forst SElemType;
 
-typedef BiTree QElemType;
+typedef Tree QElemType;
 
 // typedef int SElemType;//当使用二叉树顺序结构时，使用这个定义
 

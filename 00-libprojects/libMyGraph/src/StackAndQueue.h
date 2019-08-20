@@ -1,6 +1,8 @@
 #ifndef STACKANDQUEUE_H_INCLUDED
 #define STACKANDQUEUE_H_INCLUDED
 
+#include "MyTree.h"
+#include "MyGraph.h"
 #define TRUE 1
 #define FALSE 0
 #define OK 1

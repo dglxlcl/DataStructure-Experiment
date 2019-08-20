@@ -1,0 +1,14 @@
+Graphkind:1
+IncInfo=0
+vexnum:6,arcnum:10
+vertex:123456
+<1,2> weight:5 Info:NULL
+<1,4> weight:7 Info:NULL
+<2,3> weight:4 Info:NULL
+<3,1> weight:8 Info:NULL
+<3,6> weight:9 Info:NULL
+<4,3> weight:5 Info:NULL
+<4,6> weight:6 Info:NULL
+<5,4> weight:5 Info:NULL
+<6,1> weight:3 Info:NULL
+<6,5> weight:1 Info:NULL

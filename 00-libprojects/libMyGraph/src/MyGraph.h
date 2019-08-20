@@ -1,6 +1,7 @@
 #ifndef MYGRAPH_H_INCLUDE
 #define MYGRAPH_H_INCLUDE
 
+#include "MyTree.h"
 #define TRUE 1
 #define FALSE 0
 #define OK 1
@@ -99,20 +100,44 @@ typedef struct {
 //查找定位邻接矩阵图中第一个值为value的定点，返回其在顶点向量中的下标，若没有找到就返回-1
 int LocateVex_AdjMatrix(MGraph G, VertexType value);
 
-//创建一个用邻接矩阵表示的无向图
-Status CreateGraph_AdjMatrix(MGraph *G);
+//销毁一个用邻接矩阵表示的图/网
+Status DestroyAdjMatrix(MGraph *G);
 
-//创建一个用邻接矩阵表示的无向图
+//创建一个用邻接矩阵表示的有向图
 Status CreateDG_AdjMatrix(MGraph *G);
-//创建一个用邻接矩阵表示的无向图
+//创建一个用邻接矩阵表示的有向网
 Status CreateDN_AdjMatrix(MGraph *G);
 //创建一个用邻接矩阵表示的无向图
 Status CreateUDG_AdjMatrix(MGraph *G);
-//创建一个用邻接矩阵表示的无向图
+//创建一个用邻接矩阵表示的无向网
 Status CreateUDN_AdjMatrix(MGraph *G);
 
+//保存一个用邻接矩阵表示的有向图
+Status SaveDG_AdjMatrix(MGraph G, char *filename);
+//保存一个用邻接矩阵表示的有向网
+Status SaveDN_AdjMatrix(MGraph N, char *filename);
 //保存一个用邻接矩阵表示的无向图
 Status SaveUDG_AdjMatrix(MGraph G,char *filename);
+//保存一个用邻接矩阵表示的无向网
+Status SaveUDN_AdjMatrix(MGraph N, char *filename);
+
+//加载一个用邻接矩阵表示的有向图
+Status LoadDG_AdjMatrix(MGraph *G, char *filename);
+//加载一个用邻接矩阵表示的有向网
+Status LoadDN_AdjMatrix(MGraph *N, char *filename);
+//加载一个用邻接矩阵表示的无向图
+Status LoadUDG_AdjMatrix(MGraph *G, char *filename);
+//加载一个用邻接矩阵表示的无向网
+Status LoadUDN_AdjMatrix(MGraph *N, char *filename);
+
+//从下标为index的顶点开始，深度优先遍历一个邻接矩阵有向图
+Status DFSTranverAdjMatrix_DG(MGraph G, int index, Status (*visit)(VertexType vertex));
+//从下标为index的顶点开始，深度优先遍历一个邻接矩阵有向网
+Status DFSTranverAdjMatrix_DN(MGraph N, int index, Status (*visit)(VertexType vertex));
+//从下标为index的顶点开始，深度优先遍历一个邻接矩阵图
+Status DFSTranverAdjMatrix_UDG(MGraph G, int index, Status (*visit)(VertexType vertex));
+//从下标为index的顶点开始，深度优先遍历一个邻接矩阵图
+Status DFSTranverAdjMatrix_UDN(MGraph N, int index, Status (*visit)(VertexType vertex));
 
 
 //查找定位邻接表图中第一个值为value的定点，返回其在顶点向量中的下标，若没有找到就返回-1
@@ -136,10 +161,13 @@ Status LoadAMLGraph(AMLGraph *G, char *filename);
 //打印一个结点，visit函数的一个特例
 Status PrintVertex(VertexType vertex);
 
-//利用visit函数深度优先遍历邻接多重图G
-Status DFSTranverAMLGraph(AMLGraph G, Status (*visit)(VertexType vertex));
+//从下标为index的顶点开始，利用visit函数深度优先遍历邻接多重图G
+Status DFSTranverAMLGraph(AMLGraph G,int index,Status (*visit)(VertexType vertex));//深度遍历和二叉树的先序遍历有类似
 
 //利用visit函数广度优先遍历邻接多重图G
 Status BFSTranverAMLGraph(AMLGraph G,Status (*visit)(VertexType vertex));
+
+//建立无向图G的深度优先生成森林的孩子兄弟链表T
+void DFSForst(AMLGraph G,Tree *F);
 
 #endif
